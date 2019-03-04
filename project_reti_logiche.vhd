@@ -103,28 +103,42 @@ begin
                 o_data <= "00000000";
 
             when SET_ADDRESS =>
-                o_en <= '1';
                 if(cur_operation = 0) then
+                    o_en <= '1';
                     o_we <= '0';
                     o_data <= "00000000";
                     o_address <= "0000000000000000";
                     next_state <= WAIT_CLOCK_CICLE;
                 elsif(cur_operation = 1) then
+                    o_en <= '1';
                     o_we <= '0';
                     o_data <= "00000000";
                     o_address <= "0000000000010001";
                     next_state <= WAIT_CLOCK_CICLE;
                 elsif(cur_operation = 2) then
+                    o_en <= '1';
                     o_we <= '0';
                     o_data <= "00000000";
                     o_address <= "0000000000010010";
                     next_state <= WAIT_CLOCK_CICLE;
                 elsif(cur_operation > 2 and cur_operation < 19) then
-                    o_we <= '0';
-                    o_data <= "00000000";
-                    o_address <= cur_address;
-                    next_address <= cur_address + "0000000000000001";
-                    next_state <= WAIT_CLOCK_CICLE;
+                    if(cur_dont_care_mask(cur_point_number)='1') then
+                        o_en <= '1';
+                        o_we <= '0';
+                        o_data <= "00000000";
+                        o_address <= cur_address;
+                        next_address <= cur_address + "0000000000000001";
+                        next_state <= WAIT_CLOCK_CICLE;
+                    else
+                        o_en <= '0';
+                        o_we <= '0';
+                        o_data <= "00000000";
+                        o_address <= "0000000000000000"; -- non mi interessa
+                        next_operation <= cur_operation + 2;  --salto due operazioni
+                        next_address <= cur_address + "0000000000000010"; -- incremento l'inidirizzo
+                        next_point_number <= cur_point_number + 1; -- incremento il numero
+                        next_state <= SET_ADDRESS;
+                    end if
                 else
                     o_we <= '1';
                     o_address <= "0000000000010011";
