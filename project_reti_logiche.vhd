@@ -79,10 +79,10 @@ begin
         next_dont_care_mask <= cur_dont_care_mask;
 
         o_address <= "0000000000000000";
+        o_done <= '0';
         o_en <= '0';
         o_we <= '0';
         o_data <= "00000000";
-
 
         case cur_state is
             when START_WAIT =>
@@ -101,45 +101,32 @@ begin
                     next_state <= SET_ADDRESS;
                 end if;
 
-                 -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_done <= '0';
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
-
             when SET_ADDRESS =>
                 if(cur_operation = 0) then
                     o_en <= '1';
                     o_we <= '0';
-                    o_data <= "00000000";
                     o_address <= "0000000000000000";
                     next_state <= WAIT_CLOCK_CICLE;
                 elsif(cur_operation = 1) then
                     o_en <= '1';
                     o_we <= '0';
-                    o_data <= "00000000";
                     o_address <= "0000000000010001";
                     next_state <= WAIT_CLOCK_CICLE;
                 elsif(cur_operation = 2) then
                     o_en <= '1';
                     o_we <= '0';
-                    o_data <= "00000000";
                     o_address <= "0000000000010010";
                     next_state <= WAIT_CLOCK_CICLE;
                 elsif(cur_operation > 2 and cur_operation < 19) then
                     if(cur_dont_care_mask(cur_point_number)='1') then
                         o_en <= '1';
                         o_we <= '0';
-                        o_data <= "00000000";
                         o_address <= cur_address;
                         next_address <= cur_address + "0000000000000001";
                         next_state <= WAIT_CLOCK_CICLE;
                     else
                         o_en <= '0';
                         o_we <= '0';
-                        o_data <= "00000000";
-                        o_address <= "0000000000000000"; -- non mi interessa
                         next_operation <= cur_operation + 2;  --salto due operazioni
                         next_address <= cur_address + "0000000000000010"; -- incremento l'inidirizzo
                         next_point_number <= cur_point_number + 1; -- incremento il numero
@@ -153,24 +140,12 @@ begin
                     next_state <= WAIT_CLOCK_CICLE;
                 end if;
 
-                -- uscita per evitare i latch
-                o_done <= '0';
-
-
             when WAIT_CLOCK_CICLE =>
                 if(cur_operation < 19) then
                     next_state <= STORE_DATA;
                 elsif(cur_operation = 19) then
                     next_state <= DONE_HIGH;
                 end if;
-
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_done <= '0';
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
-
 
             when STORE_DATA =>
                 if(cur_operation = 0) then
@@ -194,25 +169,9 @@ begin
                 end if;
                 next_operation <= cur_operation + 1;
 
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_done <= '0';
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
-
-
             when CALC_DIST =>
                 next_distance <= (abs(cur_x_bello - cur_x) + abs(cur_y_bello - cur_y));
                 next_state <= UPDATE_DIST_1;
-
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_done <= '0';
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
-
 
             when UPDATE_DIST_1 =>
                 if(cur_distance < cur_min_distance) then
@@ -226,23 +185,9 @@ begin
                     next_state <= SET_ADDRESS;  --non sempre aggiorno la maschera, solo se distanza min trovata
                 end if;
 
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_done <= '0';
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
-
             when UPDATE_DIST_2 =>
                 next_out_mask(cur_point_number - 1) <= '1';
                 next_state <= SET_ADDRESS;
-
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_done <= '0';
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
 
             when DONE_HIGH =>
                 o_en <= '0';
@@ -254,21 +199,9 @@ begin
                     next_state <= DONE_HIGH;
                 end if;
 
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_data <= "00000000";
-
-
             when DONE_LOW =>
                 o_done <= '0';
                 next_state <= START_WAIT;
-
-                -- uscita per evitare i latch
-                o_address <= "0000000000000000";
-                o_en <= '0';
-                o_we <= '0';
-                o_data <= "00000000";
-
 
         end case;
     end process;
