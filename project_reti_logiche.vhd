@@ -138,8 +138,7 @@ begin
                         next_address <= cur_address + "0000000000000010"; -- incremento l'inidirizzo
                         next_point_number <= cur_point_number + 1; -- incremento il numero
                         next_state <= SET_ADDRESS;
-                    end if
-                else
+                    end if;
                     o_we <= '1';
                     o_address <= "0000000000010011";
                     o_data <= cur_out_mask;
@@ -181,11 +180,7 @@ begin
                         next_state <= SET_ADDRESS;
                     else
                         next_y <= conv_integer(i_data);
-                        if(cur_dont_care_mask(cur_point_number) = '1') then
-                            next_state <= CALC_DIST;
-                        else
-                            next_state <=SET_ADDRESS;
-                        end if;
+                        next_state <= CALC_DIST;
                         next_point_number <= cur_point_number + 1;
                     end if;
                 end if;
