@@ -139,6 +139,8 @@ begin
                         next_point_number <= cur_point_number + 1; -- incremento il numero
                         next_state <= SET_ADDRESS;
                     end if;
+                elsif(cur_operation = 19) then
+                    o_en <= '1';
                     o_we <= '1';
                     o_address <= "0000000000010011";
                     o_data <= cur_out_mask;
