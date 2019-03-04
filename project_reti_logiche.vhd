@@ -94,7 +94,7 @@ begin
                     next_dont_care_mask <= "00000000";
                     next_state <= SET_ADDRESS;
                 end if;
-                
+
                  -- uscita per evitare i latch
                 o_address <= "0000000000000000";
                 o_done <= '0';
@@ -134,7 +134,7 @@ begin
 
                 -- uscita per evitare i latch
                 o_done <= '0';
- 
+
 
             when WAIT_CLOCK_CICLE =>
                 if(cur_operation < 19) then
