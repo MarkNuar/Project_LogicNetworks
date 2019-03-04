@@ -78,6 +78,12 @@ begin
         next_point_number <= cur_point_number;
         next_dont_care_mask <= cur_dont_care_mask;
 
+        o_address <= "0000000000000000";
+        o_en <= '0';
+        o_we <= '0';
+        o_data <= "00000000";
+
+
         case cur_state is
             when START_WAIT =>
                 if(i_start = '1') then
