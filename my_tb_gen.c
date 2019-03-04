@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void generate_vhdl(FILE*,int);
 
@@ -16,7 +17,7 @@ int main(){
     scanf("%d",&numTest);
   while(numTest>1000 || numTest<1);
   for(int i=0; i<numTest;i++){
-    sprintf(fileName,"test_%d",i+1);
+    sprintf(fileName,"test_%d.vhd",i+1);
     if(fp=fopen(fileName, "w")){
         generate_vhdl(fp,i+1);
       fclose(fp);
@@ -30,33 +31,68 @@ int main(){
 void generate_vhdl(FILE* fp, int numTest){
 
   int dontCareMask[8];
-  int points[2][9]; //righe e poi colonne, il primo è il centro
+  int points[2][8]; //righe e poi colonne, il primo è il centro
   int result[8];
   int minDistance = 510;
   int curDistance;
+  int xCenter, yCenter;
+
+  srand(time(0));
+  xCenter=(rand()%256);
+  yCenter=(rand()%256);
 
   for(int i=0; i<8; i++)
     result[i]=0;
   for(int i=0; i<8; i++)
     dontCareMask[i]=(rand()%2);
-
+  /*
+  printf("dontCareMask\n");
+  for(int i=0; i<8; i++)
+    printf("%d",dontCareMask[i]);
+  printf("\n");
+  */
   for(int i=0; i<2; i++)
-    for(int j=0; j<9; j++)
+    for(int j=0; j<8; j++)
       points[i][j] = (rand()%256);
 
-  for(int j=1; j<9; j++){
-    if(dontCareMask[j-1]==1){
-      curDistance=abs(points[0][0]-points[0][j])+abs(points[1][0]-points[1][j]);
-      if(curDistance<minDistance){
-        for(int k=0; k<8; k++)
-	  result[k]=0;
-        result[j-1]=1;
+  /*
+  printf("punti\n");
+  for(int i=0; i<2; i++){
+    for(int j=7; j>=0; j--)
+      printf(" %d ",points[i][j]);
+    printf("\n");
+  }
+  printf("centro\n");
+  printf("%d\n",xCenter );
+  printf("%d\n",yCenter );
+  */
+  int col=0;
+  for(int j=7; j>=0; j--){
+    if(dontCareMask[j]==1){
+      curDistance=abs(xCenter-points[0][col])+abs(yCenter-points[1][col]);
+      /*
+      printf("distanza %d esima %d\n",j,curDistance );
+      printf("distanza minima %d\n",minDistance );
+      */
+      if(curDistance==minDistance){
+        result[j]=1;
       }
-      else if(curDistance=minDistance){
-        result[j-1]=1;
+      else if(curDistance<minDistance){
+        for(int k=0; k<8; k++)
+          result[k]=0;
+        result[j]=1;
+        minDistance=curDistance;
       }
     }
+    col++;
   }
+
+  /*
+  printf("risultato\n");
+  for(int i=0; i<8; i++)
+    printf("%d",result[i]);
+  printf("\n");
+  */
 
   fprintf(fp, "library ieee;\n");
   fprintf(fp, "use ieee.std_logic_1164.all;\n");
@@ -80,13 +116,16 @@ void generate_vhdl(FILE* fp, int numTest){
   for(int i=0;i<8;i++)
     fprintf(fp,"%d", dontCareMask[i]);
   fprintf(fp, "\",\n");
+
   int j=1;
-  for(int i=0;i<9;i++){
+  for(int i=0;i<8;i++){
       fprintf(fp, "%d => std_logic_vector(to_unsigned(%d,8)),\n",j,points[0][i]);
       j++;
       fprintf(fp, "%d => std_logic_vector(to_unsigned(%d,8)),\n",j,points[1][i]);
       j++;
   }
+  fprintf(fp, "17 => std_logic_vector(to_unsigned(%d,8)),\n",xCenter);
+  fprintf(fp, "18 => std_logic_vector(to_unsigned(%d,8)),\n",yCenter);
   fprintf(fp, "		others => (others =>'0'));\n");
 
   fprintf(fp, "	constant EXPECTED_OUTPUT : std_logic_vector(7 downto 0) := \"");
