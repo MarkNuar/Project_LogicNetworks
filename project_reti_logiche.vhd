@@ -62,7 +62,7 @@ begin
         end if;
     end process;
 
-    process(i_start, i_data, i_start, cur_state, cur_address, cur_operation, cur_x_bello, cur_y_bello, cur_x, cur_y, cur_min_distance, cur_distance, cur_out_mask, cur_point_number, cur_dont_care_mask)
+    process(i_start, i_data, cur_state, cur_address, cur_operation, cur_x_bello, cur_y_bello, cur_x, cur_y, cur_min_distance, cur_distance, cur_out_mask, cur_point_number, cur_dont_care_mask)
     begin
 
         next_state <= cur_state;
