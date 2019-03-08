@@ -34,10 +34,10 @@ architecture Behavioral of project_reti_logiche is
     signal cur_y_bello, next_y_bello : integer range 0 to 255;
     signal cur_x, next_x : integer range 0 to 255;
     signal cur_y, next_y : integer range 0 to 255;
-    signal cur_min_distance, next_min_distance : integer range 0 to 510;
-    signal cur_distance, next_distance : integer range 0 to 510;
+    signal cur_min_distance, next_min_distance : integer range 0 to 511;
+    signal cur_distance, next_distance : integer range 0 to 511;
     signal cur_out_mask, next_out_mask : std_logic_vector(7 downto 0);
-    signal cur_point_number, next_point_number : integer range 0 to 7;
+    signal cur_point_number, next_point_number : integer range 0 to 8;
     signal cur_dont_care_mask, next_dont_care_mask : std_logic_vector (7 downto 0);
 
 begin
