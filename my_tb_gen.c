@@ -187,6 +187,18 @@ void generate_vhdl(FILE* fp, int numTest){
   fprintf(fp, "		tb_rst <= '1';\n");
   fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
   fprintf(fp, "		tb_rst <= '0';\n");
+
+  //parte aggiunta
+  fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
+  fprintf(fp, "		tb_start <= '1';\n");
+  fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
+  fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
+  fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
+  fprintf(fp, "		tb_rst <= '1';\n");
+  fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
+  fprintf(fp, "		tb_rst <= '0';\n");
+  //fine parte aggiunta, testo il reset asincroni
+
   fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
   fprintf(fp, "		tb_start <= '1';\n");
   fprintf(fp, "		wait for c_CLOCK_PERIOD;\n");
