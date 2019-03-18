@@ -30,8 +30,8 @@ architecture Behavioral of project_reti_logiche is
     signal cur_state, next_state : state_type; -- segnale per lo stato
     signal cur_address, next_address : std_logic_vector(15 downto 0);  --indirizzo dei punti incrementa
     signal cur_operation, next_operation : integer range 0 to 19;
-    signal cur_x_bello, next_x_bello : integer range 0 to 255;
-    signal cur_y_bello, next_y_bello : integer range 0 to 255;
+    signal cur_x_centre, next_x_centre : integer range 0 to 255;
+    signal cur_y_centre, next_y_centre : integer range 0 to 255;
     signal cur_x, next_x : integer range 0 to 255;
     signal cur_y, next_y : integer range 0 to 255;
     signal cur_min_distance, next_min_distance : integer range 0 to 511;
@@ -50,8 +50,8 @@ begin
             cur_state <= next_state;
             cur_address <= next_address;
             cur_operation <= next_operation;
-            cur_x_bello <= next_x_bello;
-            cur_y_bello <= next_y_bello;
+            cur_x_centre <= next_x_centre;
+            cur_y_centre <= next_y_centre;
             cur_x <= next_x;
             cur_y <= next_y;
             cur_min_distance <= next_min_distance;
@@ -62,14 +62,14 @@ begin
         end if;
     end process;
 
-    process(i_start, i_data, cur_state, cur_address, cur_operation, cur_x_bello, cur_y_bello, cur_x, cur_y, cur_min_distance, cur_distance, cur_out_mask, cur_point_number, cur_dont_care_mask)
+    process(i_start, i_data, cur_state, cur_address, cur_operation, cur_x_centre, cur_y_centre, cur_x, cur_y, cur_min_distance, cur_distance, cur_out_mask, cur_point_number, cur_dont_care_mask)
     begin
 
         next_state <= cur_state;
         next_address <= cur_address;
         next_operation <= cur_operation;
-        next_x_bello <= cur_x_bello;
-        next_y_bello <= cur_y_bello;
+        next_x_centre <= cur_x_centre;
+        next_y_centre <= cur_y_centre;
         next_x <= cur_x;
         next_y <= cur_y;
         next_min_distance <= cur_min_distance;
@@ -87,8 +87,8 @@ begin
         case cur_state is
             when START_WAIT =>
                 if(i_start = '1') then
-                    next_x_bello <= 0;
-                    next_y_bello <= 0;
+                    next_x_centre <= 0;
+                    next_y_centre <= 0;
                     next_x <= 0;
                     next_y <= 0;
                     next_address <= "0000000000000001";
@@ -152,10 +152,10 @@ begin
                     next_dont_care_mask <= i_data;
                     next_state <= SET_ADDRESS;
                 elsif(cur_operation = 1) then
-                    next_x_bello <= conv_integer(i_data);
+                    next_x_centre <= conv_integer(i_data);
                     next_state <= SET_ADDRESS;
                 elsif(cur_operation = 2) then
-                    next_y_bello <= conv_integer(i_data);
+                    next_y_centre <= conv_integer(i_data);
                     next_state <= SET_ADDRESS;
                 elsif(cur_operation > 2 and cur_operation < 19) then
                     if((cur_operation mod 2) = 1) then
@@ -170,7 +170,7 @@ begin
                 next_operation <= cur_operation + 1;
 
             when CALC_DIST =>
-                next_distance <= (abs(cur_x_bello - cur_x) + abs(cur_y_bello - cur_y));
+                next_distance <= (abs(cur_x_centre - cur_x) + abs(cur_y_centre - cur_y));
                 next_state <= UPDATE_DIST_1;
 
             when UPDATE_DIST_1 =>
